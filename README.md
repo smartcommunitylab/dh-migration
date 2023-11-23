@@ -16,21 +16,42 @@ Be sure to have the following elements installed before proceeding:
 
 # STEP 1: PREPARING MINIKUBE
 From the command line, start your minikube profile by typing:
--   minikube start -p <NAME_OF_YOUR_PROFILE> --memory 8192
+
+```
+minikube start -p <NAME_OF_YOUR_PROFILE> --memory 8192
+```
+
 You can decide to use more memory if you wish, but do not go below this number.
 Once it's ready, install the ingress addon by typing:
--   minikube -p <NAME_OF_YOUR_PROFILE> addons enable ingress
+
+```
+minikube -p <NAME_OF_YOUR_PROFILE> addons enable ingress
+```
+
 Before proceeding, wait until all the pods/jobs are ready/completed. To check status of all the resources mentioned, type:
--   kubecl get pods -A
+
+```
+kubecl get pods -A
+```
+
 If you want to check the status of the resources in real-time while they are being downloaded and installed, type:
--   kubecl get pods -A -w
+
+```
+kubecl get pods -A -w
+```
+
 
 # STEP 2: CONFIGURE YOUR PREFERENCES
-You can modify the file dh-migration/values.yaml to your own needs. You will notice that usernames and passwords for the components of this package are all called dhmigrationuser and dhmigrationpassword (except from postgres, see the comment in the file) as default, but you can change them to whatever you prefer.
+You can modify the file dh-migration/values.yaml to your own needs.
+You will notice that usernames and passwords for the components of this package are all called dhmigrationuser and dhmigrationpassword (except from postgres, see the comment in the file) as default, but you can change them to whatever you prefer.
 
 # STEP 3: ADDING INGRESS ROUTES
 First, check your IP on minikube by typing:
--   minikube -p <NAME_OF_YOUR_PROFILE> ip
+
+```
+minikube -p <NAME_OF_YOUR_PROFILE> ip
+```
+
 Copy the address.
 Next, let's modify the file etc/hosts.
 Open the file with administrator privileges with an editor of your choice, and add the following entry to the list of IPv4 addresses:
@@ -46,20 +67,40 @@ Be sure to save the changes.
 
 # STEP 4: INSTALL THE HELM CHART
 To install, type the following:
--   helm install -n <NAME_OF_YOUR_NAMESPACE> <NAME_OF_YOUR_RELEASE> <PATH-OF-DH-MIGRATION-FOLDER> --create-namespace
+
+```
+helm install -n <NAME_OF_YOUR_NAMESPACE> <NAME_OF_YOUR_RELEASE> <PATH-OF-DH-MIGRATION-FOLDER> --create-namespace
+```
+
 For example, if you type:
--   helm install -n dhmigration-namespace dhmigration-release helm/dh-migration --create-namespace
+
+```
+helm install -n dhmigration-namespace dhmigration-release helm/dh-migration --create-namespace
+```
+
 The release dhmigration-release will be installed using the chart in the path helm/dh-migration in the namespace dhmigration-namespace.
 Even after getting the installation's success confirmation, you will still need to wait for all pods to be ready. To check the status of the resources in the namespace you have created and selected, type the following:
--   kubectl -n <NAME_OF_YOUR_NAMESPACE> get pods
+
+```
+kubectl -n <NAME_OF_YOUR_NAMESPACE> get pods
+```
+
 If you want to check the status of the resources in real-time while they are being downloaded and installed, type:
--   kubectl -n <NAME_OF_YOUR_NAMESPACE> get pods -w
+
+```
+kubectl -n <NAME_OF_YOUR_NAMESPACE> get pods -w
+```
+
 Please note that it's normal to get error or configerror statuses while the installation is progressing, because some installations are dependant on other ones.
 Once every pod is stated as READY, the installation is completed.
 
 # STEP 5: ACCESSING YOUR RESOURCES
 If you want to access your resources, type the command:
--   helm get notes <NAME_OF_YOUR_RELEASE> -n <NAME_OF_YOUR_NAMESPACE>
+
+```
+helm get notes <NAME_OF_YOUR_RELEASE> -n <NAME_OF_YOUR_NAMESPACE>
+```
+
 This will prompt the message that you received after the installation of the chart with the list of addresses.
 
 # ADDITIONAL NOTES
