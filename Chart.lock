@@ -1,0 +1,18 @@
+dependencies:
+- name: postgres-operator
+  repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+  version: 1.10.1
+- name: minio-operator
+  repository: https://operator.min.io/
+  version: 4.3.7
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 7.0.3
+- name: nuclio
+  repository: https://nuclio.github.io/nuclio/charts
+  version: 0.18.7
+- name: nifi
+  repository: https://cetic.github.io/helm-charts
+  version: 1.1.4
+digest: sha256:f26333e7e6cead0e6789a2669c012eeab4fc536f847cf6879698e5f772b877c3
+generated: "2023-11-21T14:10:57.362084144+01:00"

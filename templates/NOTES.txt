@@ -1,0 +1,7 @@
+Welcome!
+To access your resources, use the following links once the release has been succesfully installed:
+-   Grafana:    http://{{ index .Values.grafana.ingress.hosts 0 }}
+-   Nuclio:     http://{{ index .Values.nuclio.dashboard.ingress.hosts 0 }}
+-   Minio:      https://{{ .Values.minio.ingress.host }}
+-   Nifi:       https://{{ index .Values.nifi.ingress.hosts 0 }}
+-   Dremio:     http://{{ .Values.dremio.ingress.host }}

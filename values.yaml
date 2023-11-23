@@ -1,0 +1,75 @@
+# Default values for dh-migration.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+grafana:
+  adminUser: dhmigrationuser
+  adminPassword: dhmigrationpassword
+  plugins:
+    - https://github.com/scc-digitalhub/grafana-dremio-datasource-plugin/raw/master/releases/digital-hub-dremio-1.1.1.zip;grafana-dremio-datasource-plugin
+  grafana.ini:
+    plugins:
+      allow_loading_unsigned_plugins: grafana-dremio-datasource-plugin
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    labels: {}
+    path: /
+    pathType: Prefix
+    hosts:
+      - grafana.local
+    extraPaths: []
+    tls: []
+
+nifi:
+  zookeeper:
+    replicaCount: 1
+  auth:
+    singleUser:
+      username: dhmigrationuser
+      password: dhmigrationpassword # Must to have at least 12 characters
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/upstream-vhost: "localhost:8443"
+      nginx.ingress.kubernetes.io/proxy-redirect-from: "https://localhost:8443"
+      nginx.ingress.kubernetes.io/proxy-redirect-to: "https://nifi.local" #Be sure to modify nifi.local to your host if you change it below.
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    tls: []
+    hosts:
+      - nifi.local
+    path: /
+
+nuclio:
+  dashboard:
+    ingress:
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+      path: /
+      hosts:
+        - nuclio.local
+      tls: []
+  registry:
+    secretName: ""
+
+minio:
+  ingress:
+    host: minio.local
+  secrets:
+    # create a kubernetes secret object with the accessKey and secretKey as defined here.
+    name: creds-secret
+    accessKey: dhmigrationuser
+    secretKey: dhmigrationpassword
+
+minio-operator:
+  tenants: []
+
+dremio:
+  ingress:
+    host: dremio.local
+
+# Postgres automatically generates a secret with the password for the user dhmigration (database: dhmigration)
