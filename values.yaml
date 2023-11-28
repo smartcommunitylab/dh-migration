@@ -24,6 +24,7 @@ grafana:
     tls: []
 
 nifi:
+  postStart: /opt/nifi/; wget -P /opt/nifi/ https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
   zookeeper:
     replicaCount: 1
   auth:
