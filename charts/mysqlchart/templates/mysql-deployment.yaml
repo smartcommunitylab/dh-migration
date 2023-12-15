@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: {{ .Values.deploy.type }}
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: {{ .Values.deploy.image }}
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.mysqlCreds.existingSecret }}
+              name: {{ .Values.mysqlCreds.existingSecret }}
+              key: {{ .Values.mysqlCreds.passwordKey }}
+            {{- else }}
+              name: mysql-secret
+              key: password
+            {{- end }}
+        ports:
+        - containerPort: {{ .Values.global.mySql.port }}
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: {{ .Values.deploy.mountPath }}
+        - name: config
+          mountPath: /docker-entrypoint-initdb.d/dss_init.sql
+          subPath: dss_init.sql
+      imagePullSecrets: {{ .Values.global.imagePullSecret }}
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{ .Values.deploy.claimName }}
+      - name: config
+        secret:
+          secretName: mysqlconfig
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.mySql.service }}
+spec:
+  ports:
+  - port: {{ .Values.global.mySql.port }}
+  selector:
+    app: {{ .Values.global.mySql.app }}

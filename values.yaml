@@ -23,6 +23,19 @@ grafana:
     extraPaths: []
     tls: []
 
+dssSecret:
+  name: dss-creds
+  username: dhmigrationuser
+  password: dhmigrationpassword
+
+dss:
+  env:
+    DSS_SERVER_URL: https://localhost:9443
+    DSS_REVERSEPROXY: localhost
+  ingress:
+    enabled: true
+    host: dss.local
+
 nifi:
   postStart: /opt/nifi/; wget -P /opt/nifi/ https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
   zookeeper:
@@ -59,6 +72,7 @@ nuclio:
 
 minio:
   ingress:
+    enabled: true
     host: minio.local
   secrets:
     # create a kubernetes secret object with the accessKey and secretKey as defined here.
@@ -71,6 +85,7 @@ minio-operator:
 
 dremio:
   ingress:
+    enabled: true
     host: dremio.local
 
 # Postgres automatically generates a secret with the password for the user dhmigration (database: dhmigration)

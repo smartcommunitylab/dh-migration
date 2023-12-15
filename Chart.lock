@@ -15,4 +15,4 @@ dependencies:
   repository: https://cetic.github.io/helm-charts
   version: 1.1.4
 digest: sha256:f26333e7e6cead0e6789a2669c012eeab4fc536f847cf6879698e5f772b877c3
-generated: "2023-11-21T14:10:57.362084144+01:00"
+generated: "2023-12-15T11:38:15.323035043+01:00"

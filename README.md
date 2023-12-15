@@ -6,6 +6,7 @@ The following is a step by step installation guide that will let you use the fol
 -   Nuclio
 -   Grafana
 -   Dremio
+-   DSS
 
 # PREREQUISITES
 Be sure to have the following elements installed before proceeding:
@@ -56,7 +57,7 @@ Copy the address.
 Next, let's modify the file etc/hosts.
 Open the file with administrator privileges with an editor of your choice, and add the following entry to the list of IPv4 addresses:
 
-<MINIKUBE_IP>    <NUCLIO_HOST> <MINIO_HOST> <GRAFANA_HOST> <NIFI_HOST> <DREMIO_HOST> 
+<MINIKUBE_IP>    <NUCLIO_HOST> <MINIO_HOST> <GRAFANA_HOST> <NIFI_HOST> <DREMIO_HOST> <DSS_HOST>
 
 Replace the field <MINIKUBE_IP> with the ip you got from the previous command.
 Replace the <SOMETHING_HOST> fields with the hosts you have chosen in the values. If you use the default ones and supposing that your minikube ip is 192.168.76.2, it will look like this:

@@ -5,3 +5,4 @@ To access your resources, use the following links once the release has been succ
 -   Minio:      https://{{ .Values.minio.ingress.host }}
 -   Nifi:       https://{{ index .Values.nifi.ingress.hosts 0 }}
 -   Dremio:     http://{{ .Values.dremio.ingress.host }}
+-   DSS:        https://{{ .Values.dss.ingress.host }}

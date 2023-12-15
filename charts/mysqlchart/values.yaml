@@ -1,0 +1,40 @@
+# MySqlDeployment
+deploy:
+  type: Recreate
+  image: mysql:5.7
+  mountPath: /var/lib/mysql
+  claimName: mysql-pv-claim
+mysqlCreds:
+  existingSecret: ""
+  passwordKey: ""
+
+# Storage
+persistentVolume:
+  name: mysql-pv-volume
+  type: local
+  storageClassName: manual
+  storage: 20Gi
+  accessModes: ReadWriteOnce
+  path: "/mnt/data"
+persistentVolumeClaim:
+  name: mysql-pv-claim
+  storageClassName: manual
+  accessModes: ReadWriteOnce
+  storage: 20Gi
+
+# Credentials
+mysqlcreds:
+  username: root
+  password: pwd
+
+# Global
+global:
+  imagePullSecret: ""
+  mySql:
+    service: mysql
+    port: 3306
+    app: mysql
+
+
+
+

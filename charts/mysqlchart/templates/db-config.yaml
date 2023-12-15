@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysqlconfig
+type: Opaque
+data:
+  dss_init.sql: {{ tpl (.Files.Get "dbconfig/dss_init.sql") . | b64enc }}
