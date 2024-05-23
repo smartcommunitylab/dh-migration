@@ -1,8 +1,10 @@
 Welcome!
 To access your resources, use the following links once the release has been succesfully installed:
--   Grafana:    http://{{ index .Values.grafana.ingress.hosts 0 }}
--   Nuclio:     http://{{ index .Values.nuclio.dashboard.ingress.hosts 0 }}
--   Minio:      https://{{ .Values.minio.ingress.host }}
--   Nifi:       https://{{ index .Values.nifi.ingress.hosts 0 }}
--   Dremio:     http://{{ .Values.dremio.ingress.host }}
--   DSS:        https://{{ .Values.dss.ingress.host }}
+-   Grafana:    {{ if .Values.grafana.ingress.tls }}https{{- else -}}http{{ end -}}://{{ index .Values.grafana.ingress.hosts 0 }}
+-   Nuclio:     {{ if .Values.nuclio.dashboard.ingress.tls }}https{{- else -}}http{{ end -}}://{{ index .Values.nuclio.dashboard.ingress.hosts 0 }}
+-   Minio:      {{ if .Values.minio.consoleIngress.tls }}https{{- else -}}http{{ end -}}://{{ index .Values.minio.consoleIngress.hosts 0 }}
+-   Minio-api:  {{ if .Values.minio.ingress.tls }}https{{- else -}}http{{ end -}}://{{ index .Values.minio.ingress.hosts 0 }}
+{{- with (index .Values.dremio.ingress.hosts 0) }}
+-   Dremio:     {{ if $.Values.dremio.ingress.tls }}https{{- else -}}http{{ end -}}://{{ .host }}
+{{- end }}
+-   DSS:        {{ if .Values.dss.ingress.tls }}https{{- else -}}http{{ end -}}://{{ .Values.dss.ingress.host }}

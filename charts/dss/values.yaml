@@ -34,7 +34,7 @@ persistence:
   accessModes:
     - ReadWriteOnce
   size: "8Gi"
-  storageClassName: "standard"
+  storageClassName: "default"
 
 readinessProbe:
   exec:
@@ -89,7 +89,7 @@ env:
   DSS_REVERSEPROXY: ""
   AAC_HOSTNAME: ""
   AAC_REVERSEPROXY: ""
-  MYSQL_HOSTNAME: mysql
+  MYSQL_HOSTNAME: tnlab-mysql
   DSS_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
   DSS_ROLE_CONTEXT: components/dss
   DSS_PORT: "9443"
@@ -112,6 +112,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
   extraPaths: []
+  ingressClassName: ""
 
 nodeSelector: {}
 

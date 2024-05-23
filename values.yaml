@@ -1,20 +1,18 @@
-# Default values for dh-migration.
+# Default values for tnlab.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 grafana:
-  adminUser: dhmigrationuser
-  adminPassword: dhmigrationpassword
-  plugins:
-    - https://github.com/scc-digitalhub/grafana-dremio-datasource-plugin/raw/master/releases/digital-hub-dremio-1.1.1.zip;grafana-dremio-datasource-plugin
-  grafana.ini:
-    plugins:
-      allow_loading_unsigned_plugins: grafana-dremio-datasource-plugin
+  rbac:
+    pspEnabled: false
+  adminUser: tnlab
+  admin:
+    existingSecret: grafana-creds
+    userKey: username
+    passwordKey: password
   ingress:
     enabled: true
     ingressClassName: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /
     labels: {}
     path: /
     pathType: Prefix
@@ -25,8 +23,7 @@ grafana:
 
 dssSecret:
   name: dss-creds
-  username: dhmigrationuser
-  password: dhmigrationpassword
+  username: tnlab
 
 dss:
   env:
@@ -35,57 +32,91 @@ dss:
   ingress:
     enabled: true
     host: dss.local
+    tls: []
+    ingressClassName: nginx
 
 nifi:
   postStart: /opt/nifi/; wget -P /opt/nifi/ https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
+  persistence:
+    enabled: true
+    subPath:
+      enabled: true
+      size: 128Gi
   zookeeper:
-    replicaCount: 1
+    enabled: false
   auth:
     singleUser:
-      username: dhmigrationuser
-      password: dhmigrationpassword # Must to have at least 12 characters
+      username: tnlab
+      password: tnlabpassword # Must have at least 12 characters
   ingress:
     enabled: true
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      nginx.ingress.kubernetes.io/upstream-vhost: "localhost:8443"
-      nginx.ingress.kubernetes.io/proxy-redirect-from: "https://localhost:8443"
-      nginx.ingress.kubernetes.io/proxy-redirect-to: "https://nifi.local" #Be sure to modify nifi.local to your host if you change it below.
-      nginx.ingress.kubernetes.io/rewrite-target: /
     tls: []
     hosts:
       - nifi.local
     path: /
+    className: nginx
 
 nuclio:
   dashboard:
     ingress:
       enabled: true
       annotations:
-        nginx.ingress.kubernetes.io/rewrite-target: /
+        kubernetes.io/ingress.class: nginx
       path: /
       hosts:
         - nuclio.local
       tls: []
-  registry:
-    secretName: ""
+  basicAuth:
+    username: ""
+    password: ""
 
 minio:
+  enabled: true
+  rootUser: tnlab
+  existingSecret: minio-creds-secret
+  mode: standalone
+  replicas: 1
   ingress:
     enabled: true
-    host: minio.local
-  secrets:
-    # create a kubernetes secret object with the accessKey and secretKey as defined here.
-    name: creds-secret
-    accessKey: dhmigrationuser
-    secretKey: dhmigrationpassword
-
-minio-operator:
-  tenants: []
+    hosts:
+      - minio-api.local
+    tls: []
+    ingressClassName: nginx
+  consoleIngress:
+    enabled: true
+    hosts:
+      - minio.local
+    tls: []
+    ingressClassName: nginx
+  persistence:
+    enabled: true
+    size: 128Gi
+  resources:
+    requests:
+      memory: 0.5Gi
+    limits:
+      memory: 4Gi
+  service:
+    type: ClusterIP
+    port: 9000
+  consoleService:
+    type: ClusterIP
+    port: 9001
 
 dremio:
   ingress:
     enabled: true
-    host: dremio.local
+    hosts:
+      - host: dremio.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    className: nginx
 
-# Postgres automatically generates a secret with the password for the user dhmigration (database: dhmigration)
+mysqlchart:
+  dssCreds:
+    dssDbUsername: tnlab
+    dssDbPassword: tnlabpassword
+
+# Postgres automatically generates a secret with the password for the user tnlab (database: tnlab)

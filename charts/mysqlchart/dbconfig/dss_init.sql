@@ -1,7 +1,7 @@
 CREATE DATABASE dss;
 
-CREATE USER IF NOT EXISTS 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-GRANT ALL ON dss.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+CREATE USER IF NOT EXISTS '{{ .Values.dssCreds.dssDbUsername }}'@'%' IDENTIFIED BY '{{ .Values.dssCreds.dssDbPassword }}';
+GRANT ALL ON dss.* TO '{{ .Values.dssCreds.dssDbUsername }}'@'%' IDENTIFIED BY '{{ .Values.dssCreds.dssDbPassword }}';
 
 USE dss;
 

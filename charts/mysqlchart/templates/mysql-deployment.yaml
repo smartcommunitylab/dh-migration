@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: {{ .Release.Name }}-mysql
 spec:
   selector:
     matchLabels:
@@ -33,6 +33,7 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: {{ .Values.deploy.mountPath }}
+          subPath: mysql
         - name: config
           mountPath: /docker-entrypoint-initdb.d/dss_init.sql
           subPath: dss_init.sql
@@ -48,7 +49,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.global.mySql.service }}
+  name: {{ .Release.Name }}-{{ .Values.global.mySql.service }}
 spec:
   ports:
   - port: {{ .Values.global.mySql.port }}

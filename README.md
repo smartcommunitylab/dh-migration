@@ -43,8 +43,9 @@ kubecl get pods -A -w
 
 
 # STEP 2: CONFIGURE YOUR PREFERENCES
-You can modify the file dh-migration/values.yaml to your own needs.
-You will notice that usernames and passwords for the components of this package are all called dhmigrationuser and dhmigrationpassword (except from postgres, see the comment in the file) as default, but you can change them to whatever you prefer.
+You can modify the file tnlab/values.yaml to your own needs.
+While you can configure usernames, most of the passwords are randomly generated.
+You can obtain the desired credentials by checking the corresponding secrets.
 
 # STEP 3: ADDING INGRESS ROUTES
 First, check your IP on minikube by typing:
@@ -70,16 +71,16 @@ Be sure to save the changes.
 To install, type the following:
 
 ```
-helm install -n <NAME_OF_YOUR_NAMESPACE> <NAME_OF_YOUR_RELEASE> <PATH-OF-DH-MIGRATION-FOLDER> --create-namespace
+helm install -n <NAME_OF_YOUR_NAMESPACE> <NAME_OF_YOUR_RELEASE> <PATH-OF-TNLAB-FOLDER> --create-namespace
 ```
 
 For example, if you type:
 
 ```
-helm install -n dhmigration-namespace dhmigration-release helm/dh-migration --create-namespace
+helm install -n tnlab-namespace tnlab-release helm/tnlab --create-namespace
 ```
 
-The release dhmigration-release will be installed using the chart in the path helm/dh-migration in the namespace dhmigration-namespace.
+The release tnlab-release will be installed using the chart in the path helm/tnlab in the namespace tnlab-namespace.
 Even after getting the installation's success confirmation, you will still need to wait for all pods to be ready. To check the status of the resources in the namespace you have created and selected, type the following:
 
 ```
@@ -105,5 +106,6 @@ helm get notes <NAME_OF_YOUR_RELEASE> -n <NAME_OF_YOUR_NAMESPACE>
 This will prompt the message that you received after the installation of the chart with the list of addresses.
 
 # ADDITIONAL NOTES
-- Values for the postgres db and user are editable in the file dh-migration/templates/dhmigration-postgresql-cluster.yaml.
+- Values for the postgres db and user are editable in the file tnlab/templates/tnlab-postgresql-cluster.yaml.
 - The first time you use dremio, you will be asked to register, so you can choose your username and password as you see fit.
+- Be sure to change the StorageClass for Dremio, DSS and MySql to an appropriate one that you have. (For example, standard in Minikube).

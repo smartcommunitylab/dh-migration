@@ -38,6 +38,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          runAsNonRoot: true
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         lifecycle:

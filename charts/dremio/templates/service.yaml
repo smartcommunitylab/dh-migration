@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dremio.fullname" . }}
+  labels:
+    {{- include "dremio.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http-ui
+      protocol: TCP
+      port: {{ .Values.service.httpPort }}
+      targetPort: 9047
+    - name: tcp-odbc-jdbc
+      protocol: TCP
+      port: {{ .Values.service.jdbcPort }}
+      targetPort: 31010
+    - name: tcp-arrow
+      protocol: TCP
+      port: 32010
+      targetPort: {{ .Values.service.arrowPort }}
+  selector:
+    {{- include "dremio.selectorLabels" . | nindent 4 }}

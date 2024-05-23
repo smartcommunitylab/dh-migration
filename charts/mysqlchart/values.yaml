@@ -12,20 +12,24 @@ mysqlCreds:
 persistentVolume:
   name: mysql-pv-volume
   type: local
-  storageClassName: manual
-  storage: 20Gi
+  storageClassName: default
+  storage: 8Gi
   accessModes: ReadWriteOnce
   path: "/mnt/data"
+  reclaimPolicy: Delete
 persistentVolumeClaim:
   name: mysql-pv-claim
-  storageClassName: manual
+  storageClassName: default
   accessModes: ReadWriteOnce
-  storage: 20Gi
+  storage: 8Gi
 
 # Credentials
 mysqlcreds:
   username: root
   password: pwd
+dssCreds:
+  dssDbUsername: ""
+  dssDbPassword: ""
 
 # Global
 global:

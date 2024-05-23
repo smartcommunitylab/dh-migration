@@ -1,20 +1,27 @@
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
 metadata:
-  name: dhmigration-postgres-cluster
+  name: tnlab-postgres-cluster
 spec:
-  teamId: "dhmigration"
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  teamId: "tnlab"
   volume:
-    size: 8Gi
-  numberOfInstances: 1
+    size: 512Gi
+  numberOfInstances: 3
   users:
-    dhmigration:
+    tnlab:
     - superuser
     - createdb
   databases:
-    dhmigration: dhmigration
+    tnlab: tnlab
   preparedDatabases:
-    dhmigration:
+    tnlab:
       schemas:
         public:
           defaultRoles: false
