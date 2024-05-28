@@ -5,52 +5,114 @@
 grafana:
   rbac:
     pspEnabled: false
+  # Set the username for Grafana (password randomly generated)
   adminUser: tnlab
   admin:
+    # Name of the secret used by Grafana
     existingSecret: grafana-creds
     userKey: username
     passwordKey: password
+  # Plugins to include in Grafana in list form. The format is 'plugin_package_url;plugin_alias'. You can check the example below for reference:
+  # plugins:
+  #   - https://github.com/grafana/worldmap-panel/releases/download/v1.0.6/grafana-worldmap-panel-1.0.6.zip;grafana-world-map-travel-plugin
+  plugins: []
+  # Customize your Grafana application modifying the grafana.ini file, setting the parameters you need. Here is the documentation for reference: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
+  # Example: allow unsiged plugins in Grafana
+  # grafana.ini:
+  #   plugins:
+  #     allow_loading_unsigned_plugins: grafana-world-map-travel-plugin
+  grafana.ini: {}
   ingress:
     enabled: true
+    # Set up annotations to customize your ingress exposition even further.
+    # Example: specify that the backend-protocol is https
+    # annotations:
+    #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    annotations: {}
     ingressClassName: nginx
     labels: {}
     path: /
     pathType: Prefix
+    # Set up your host for the application.
     hosts:
       - grafana.local
     extraPaths: []
+    # Set up your TLS with a secret like the example below:
+    # tls:
+    #   - secretName: "your-tls-secret"
+    #     hosts:
+    #       - your.host
     tls: []
 
 dssSecret:
+  # Specify the secret name and the username that will be used for accessing DSS (password randomly generated)
   name: dss-creds
   username: tnlab
 
 dss:
+  # If you want to use an external keystore for DSS, uncomment the following lines:
+  # externalKeystore:
+  #   enabled: true
   env:
+    # DSS_SERVER_URL should correspond to the link you use for accessing DSS. For example, if you expose it by ingress:
+    # DSS_SERVER_URL: https://your.host
     DSS_SERVER_URL: https://localhost:9443
+    # DSS_REVERSEPROXY should correspond to your host
+    # DSS_REVERSEPROXY: your.host
     DSS_REVERSEPROXY: localhost
   ingress:
     enabled: true
+    # Set up annotations to customize your ingress exposition even further.
+    # Example: specify that the backend-protocol is https
+    # annotations:
+    #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    annotations: {}
+    # Set up your host for the application.
     host: dss.local
+    # Set up your TLS with a secret like the example below:
+    # tls:
+    #   - secretName: "your-tls-secret"
+    #     hosts:
+    #       - your.host
     tls: []
     ingressClassName: nginx
 
 nifi:
+  # postStart, with this configuration, loads PostgreSql in NiFi, allowing to use the corresponding dialect.
   postStart: /opt/nifi/; wget -P /opt/nifi/ https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
+  # To whitelist your host for NiFi, uncomment the two rows below and set your host:
+  # properties:
+  #   webProxyHost: your.host
+  # Sets the memory assigned to NiFi
   persistence:
     enabled: true
     subPath:
       enabled: true
       size: 128Gi
+  # Allows you to set up one or more zookeeper to use with NiFi.
+  # WARNING: setting this to true will require more memory than the one already assigned.
   zookeeper:
     enabled: false
   auth:
     singleUser:
+      # Set the username for NiFi
       username: tnlab
+      # Set the password for NiFi
       password: tnlabpassword # Must have at least 12 characters
   ingress:
     enabled: true
+    # Set up annotations to customize your ingress exposition even further.
+    # Example: specify that the backend-protocol is https
+    # annotations:
+    #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    annotations: {}
+    # Set up your TLS with a secret like the example below:
+    # tls:
+    #   - secretName: "your-tls-secret"
+    #     hosts:
+    #       - your.host
     tls: []
+    # Set up your host for the application.
     hosts:
       - nifi.local
     path: /
@@ -58,34 +120,78 @@ nifi:
 
 nuclio:
   dashboard:
+    # If you install/update the chart in an environment without docker, use kaniko instead:
+    # containerBuilderKind: kaniko
     ingress:
       enabled: true
+      # Set up annotations to customize your ingress exposition even further.
+      # Example: specify that the backend-protocol is https
+      # annotations:
+      #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       annotations:
         kubernetes.io/ingress.class: nginx
       path: /
+      # Set up your host for the application.
       hosts:
         - nuclio.local
+      # Set up your TLS with a secret like the example below:
+      # tls:
+      #   - secretName: "your-tls-secret"
+      #     hosts:
+      #       - your.host
       tls: []
+  # Create a basic auth secret (nuclio-auth-secret) that will be used to access Nuclio.
+  # The name of the secret and the auth type must be specified in the ingress annotations.
   basicAuth:
+    # Set the username
     username: ""
+    # Set the password
     password: ""
+  # Set the registry that will be used by Nuclio with the registry secret name and the registry url.
+  # registry:
+  #   secretName: ""
+  #   pushPullUrl: ""
 
 minio:
   enabled: true
+  # Set the username for Minio (password randomly generated)
   rootUser: tnlab
+  # Name of the secret with the minio credentials.
   existingSecret: minio-creds-secret
   mode: standalone
   replicas: 1
   ingress:
     enabled: true
+    # Set up annotations to customize your ingress exposition even further.
+    # Example: specify that the backend-protocol is https
+    # annotations:
+    #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    annotations: {}
+    # Set up your host for the Minio API.
     hosts:
       - minio-api.local
+    # Set up your TLS with a secret like the example below:
+    # tls:
+    #   - secretName: "your-tls-secret"
+    #     hosts:
+    #       - your.host
     tls: []
     ingressClassName: nginx
   consoleIngress:
     enabled: true
+    # Set up annotations to customize your ingress exposition even further.
+    # Example: specify that the backend-protocol is https
+    # annotations:
+    #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    annotations: {}
+    # Set up your host for the Minio Console.
     hosts:
       - minio.local
+    # Set up your TLS with a secret like the example below:
+    # tls:
+    #   - secretName: "your-tls-secret"
+    #     hosts:
+    #       - your.host
     tls: []
     ingressClassName: nginx
   persistence:
