@@ -22,6 +22,11 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
+
+# The following are the dependencies of this chart.
+# WARNING: changing the dependencies might lead to unwanted behaviours or break the release.
+# It is reccomended to upgrade them only if you have the need to but be sure to check for compatibility issues with your use case before hand.
+# Run the command "helm dependency update chart_path" if you modify/add/remove a dependency.
 dependencies:
 - name: postgres-operator
   version: "1.11.0"
